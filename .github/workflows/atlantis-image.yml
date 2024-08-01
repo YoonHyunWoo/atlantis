@@ -130,6 +130,7 @@ jobs:
 
     - name: "Build ${{ env.PUSH == 'true' && 'and push' || '' }} ${{ env.DOCKER_REPO }} image"
       if: contains(fromJson('["push", "pull_request"]'), github.event_name)
+      id : build
       uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
       with:
         cache-from: type=gha
@@ -141,12 +142,19 @@ jobs:
           ATLANTIS_COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
           ATLANTIS_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
         platforms: linux/arm64/v8,linux/amd64,linux/arm/v7
-        push: ${{ env.PUSH }}
+        # push: ${{ env.PUSH }}
         tags: ${{ steps.meta.outputs.tags }}
         target: ${{ matrix.image_type }}
         labels: ${{ steps.meta.outputs.labels }}
         outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.description'] }}
 
+    - name: Generate artifact attestation
+      uses: actions/attest-build-provenance@v1
+      with:
+        subject-name: ${{ env.DOCKER_REPO }}
+        subject-digest: ${{ steps.output.build.digest }}
+        push-to-registry: true
+    
   test:
     needs: [changes]
     if: needs.changes.outputs.should-run-build == 'true'
