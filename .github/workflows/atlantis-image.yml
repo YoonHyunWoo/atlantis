@@ -159,7 +159,8 @@ jobs:
         input-string: ${{ steps.output.build.digest }}
 
     - run : echo "DIGEST:++ = ${{ steps.output.build.digest }}"
-    - run : echo ${{ steps.output.build }}
+    - run : echo "BUILD :++ = ${{ steps.output.build }}"
+    - run : echo "OUTPUT :++ = ${{ steps.output}}"
     
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v1
