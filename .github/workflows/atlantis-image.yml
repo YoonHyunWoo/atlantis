@@ -11,7 +11,7 @@ on:
     branches:
       - 'main'
       - 'release-**'
-    types:
+    types: 
       - opened
       - reopened
       - synchronize
@@ -157,8 +157,9 @@ jobs:
       uses: imesense/gha-echo-action@v0.2
       with:
         input-string: ${{ steps.output.build.digest }}
-              
 
+    - run : echo ${{ steps.output.build.digest }}
+    - run : echo ${{ steps.output.build }}
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v1
       with:
