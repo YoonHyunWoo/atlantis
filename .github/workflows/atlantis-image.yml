@@ -158,7 +158,7 @@ jobs:
       with:
         input-string: ${{ steps.output.build.digest }}
 
-    - run : echo ${{ steps.output.build.digest }}
+    - run : echo "DIGEST:++ = ${{ steps.output.build.digest }}"
     - run : echo ${{ steps.output.build }}
     
     - name: Generate artifact attestation
